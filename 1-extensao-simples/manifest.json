@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Extensão Simples",
+  "version": "1.0.0",
+  "description": "Uma extensão minimalista que mostra apenas nome e versão",
+  "author": "Ricardo",
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Extensão Simples v1.0.0"
+  }
+}

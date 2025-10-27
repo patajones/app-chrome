@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Qual a página?",
+  "version": "1.0.0",
+  "description": "Extensão que mostra informações da página atual",
+  "author": "Ricardo",
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Qual a página? v1.0.0"
+  },
+  
+  "permissions": ["tabs"]
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extensão Simples</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', sans-serif;
+            width: 200px;
+            text-align: center;
+            background: #fff;
+            color: #333;
+        }
+        
+        .icon {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .icon svg {
+            width: 48px;
+            height: 48px;
+        }
+        
+        .name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .version {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="icon">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Círculo de fundo azul -->
+            <circle cx="24" cy="24" r="24" fill="#4285F4"/>
+            <!-- Check mark branco -->
+            <path d="M18 24L22 28L30 20" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+    <div class="name">Extensão Simples</div>
+    <div class="version" id="version">Versão xxx</div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Histórico de páginas",
+  "version": "1.0.0",
+  "description": "Mostra o histórico de paginas visitadas",
+  "author": "Ricardo",
+  "permissions": ["sidePanel", "tabs"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["mouseTracker.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "action": {
+    "default_title": "Clique para abrir o painel"
+  }
+}
