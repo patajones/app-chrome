@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Identifica Site SEI",
+  "version": "1.0.0",
+  "description": "Identifica sites SEI, verifica login e mostra usuário/unidade logada",
+  "author": "Ricardo",
+  "permissions": ["sidePanel", "tabs", "storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "action": {
+    "default_title": "Identifica Site SEI"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
