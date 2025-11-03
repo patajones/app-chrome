@@ -1,7 +1,16 @@
 // sidepanel.js - Exibe sites SEI e informações de login
-let currentSites = [];
-let selectedUrl = ''; // Armazena a URL selecionada ao invés do índice
 
+// Array global que armazena todos os sites SEI detectados
+let currentSites = [];
+
+// URL do site atualmente selecionado no dropdown (usado para manter seleção após atualizações)
+let selectedUrl = '';
+
+/**
+ * Renderiza a lista de sites SEI no painel lateral
+ * Busca os sites salvos no storage e exibe em um dropdown
+ * Se não houver sites, mostra mensagem informativa
+ */
 function renderSites() {
   chrome.storage.local.get(['seiSites'], (result) => {
     currentSites = result.seiSites || [];
@@ -10,7 +19,6 @@ function renderSites() {
     if (currentSites.length === 0) {
       content.innerHTML = `
         <div class="empty-state">
-          Nenhum site SEI detectado ainda.<br>
           Navegue em um site SEI para que ele apareça aqui.
         </div>
       `;
@@ -48,6 +56,11 @@ function renderSites() {
   });
 }
 
+/**
+ * Exibe informações detalhadas do site SEI selecionado
+ * Mostra status de login, dados do usuário, unidade e botões de ação
+ * Atualiza a barra superior com as informações do site
+ */
 function showSiteInfo() {
   const select = document.getElementById('siteSelect');
   const index = select.value;
@@ -109,6 +122,13 @@ function showSiteInfo() {
   updateSeiBarInfo();
 }
 
+/**
+ * Verifica o status de login de um site SEI específico
+ * Abre o site em uma aba em segundo plano para que o content script detecte o status
+ * Fecha a aba automaticamente após 2 segundos e atualiza a interface
+ * 
+ * @param {number} index - Índice do site no array currentSites
+ */
 function checkSiteStatus(index) {
   const site = currentSites[index];
   
@@ -126,6 +146,13 @@ function checkSiteStatus(index) {
   });
 }
 
+/**
+ * Busca e exibe os processos abertos no SEI
+ * Envia mensagem para o content script extrair a URL correta do menu "Controle de Processos"
+ * Em seguida, abre essa página para extrair a lista de processos
+ * 
+ * @param {number} index - Índice do site no array currentSites
+ */
 function searchOpenProcesses(index) {
   const site = currentSites[index];
   const processesContainer = document.getElementById('processesContainer');
@@ -169,6 +196,13 @@ function searchOpenProcesses(index) {
   });
 }
 
+/**
+ * Abre a página de Controle de Processos e extrai os dados
+ * Cria uma aba em segundo plano, aguarda o carregamento, extrai os processos e fecha a aba
+ * 
+ * @param {string} controleUrl - URL da página de Controle de Processos
+ * @param {HTMLElement} processesContainer - Container onde os processos serão exibidos
+ */
 function openProcessControlPage(controleUrl, processesContainer) {
   // Abre a página em background e espera o content script extrair os dados
   chrome.tabs.create({ url: controleUrl, active: false }, (tab) => {
@@ -192,6 +226,12 @@ function openProcessControlPage(controleUrl, processesContainer) {
   });
 }
 
+/**
+ * Exibe a lista de processos agrupados por categoria
+ * Renderiza os processos com links, descrições, responsáveis e marcadores
+ * 
+ * @param {Array} processes - Array de objetos contendo informações dos processos
+ */
 function displayProcesses(processes) {
   const processesContainer = document.getElementById('processesContainer');
   
@@ -249,7 +289,11 @@ function displayProcesses(processes) {
   processesContainer.innerHTML = html;
 }
 
-// Atualiza a barra superior com a URL e dados do usuário do site selecionado
+/**
+ * Atualiza a barra superior com informações do site SEI selecionado
+ * Preenche URL, nome do usuário, nickname e unidade na barra de identificação
+ * Se nenhum site estiver selecionado, limpa todos os campos
+ */
 function updateSeiBarInfo() {
   const seiBarUrl = document.getElementById('seiBarUrl');
   const seiUserName = document.getElementById('seiUserName');
@@ -273,7 +317,10 @@ function updateSeiBarInfo() {
   }
 }
 
-// Atualiza a barra superior com a URL do site selecionado
+/**
+ * Atualiza apenas a URL na barra superior
+ * Função simplificada que atualiza somente o campo de URL do site selecionado
+ */
 function updateSeiBarUrl() {
   const seiBarUrl = document.getElementById('seiBarUrl');
   const select = document.getElementById('siteSelect');
@@ -285,7 +332,11 @@ function updateSeiBarUrl() {
   }
 }
 
-// Função para selecionar automaticamente o site da aba ativa
+/**
+ * Seleciona automaticamente o site correspondente à aba ativa do navegador
+ * Compara o origin da URL da aba ativa com os sites salvos
+ * Se encontrar correspondência, seleciona o site no dropdown automaticamente
+ */
 function selectCurrentTabSite() {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (tabs.length > 0) {
@@ -307,14 +358,22 @@ function selectCurrentTabSite() {
   });
 }
 
-// Renderiza ao carregar
+/**
+ * Event Listener: Inicialização do painel lateral
+ * Executado quando o DOM é carregado completamente
+ * Renderiza a lista de sites e tenta selecionar o site da aba ativa
+ */
 document.addEventListener('DOMContentLoaded', () => {
   renderSites();
   // Após renderizar, seleciona o site da aba ativa
   setTimeout(selectCurrentTabSite, 100);
 });
 
-// Atualiza quando há mudanças no storage
+/**
+ * Event Listener: Monitora mudanças no storage local
+ * Quando os sites SEI são atualizados, re-renderiza a interface
+ * e tenta selecionar o site da aba ativa
+ */
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'local' && changes.seiSites) {
     // Apenas re-renderiza, a função renderSites() já cuida de restaurar a seleção
@@ -324,12 +383,20 @@ chrome.storage.onChanged.addListener((changes, area) => {
   }
 });
 
-// Detecta quando o usuário muda de aba
+/**
+ * Event Listener: Detecta mudança de aba ativa
+ * Quando o usuário troca de aba, tenta selecionar automaticamente
+ * o site SEI correspondente no dropdown
+ */
 chrome.tabs.onActivated.addListener(() => {
   selectCurrentTabSite();
 });
 
-// Detecta quando o usuário navega em uma aba
+/**
+ * Event Listener: Detecta atualizações em abas abertas
+ * Quando uma aba termina de carregar (status = 'complete'),
+ * verifica se é a aba ativa e atualiza a seleção do site
+ */
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   // Só atualiza quando a navegação for completa
   if (changeInfo.status === 'complete') {
