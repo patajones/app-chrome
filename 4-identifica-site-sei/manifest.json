@@ -4,7 +4,17 @@
   "version": "1.0.0",
   "description": "Identifica sites SEI, verifica login e mostra usuário/unidade logada",
   "author": "Ricardo",
-  "permissions": ["sidePanel", "tabs", "storage"],
+  "permissions": [
+    "sidePanel",
+    "tabs",
+    "storage"
+  ],
+  "icons": {
+    "16": "icons/icon.png",
+    "32": "icons/icon.png",
+    "48": "icons/icon.png",
+    "128": "icons/icon.png"
+  },
   "background": {
     "service_worker": "background.js"
   },
@@ -16,8 +26,12 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_idle"
     }
   ]

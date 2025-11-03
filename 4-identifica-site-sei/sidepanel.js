@@ -42,6 +42,8 @@ function renderSites() {
           showSiteInfo();
         }
       }
+      
+      updateSeiBarInfo();
     }
   });
 }
@@ -103,6 +105,8 @@ function showSiteInfo() {
   if (btnSearchProcesses) {
     btnSearchProcesses.addEventListener('click', () => searchOpenProcesses(index));
   }
+  
+  updateSeiBarInfo();
 }
 
 function checkSiteStatus(index) {
@@ -243,6 +247,42 @@ function displayProcesses(processes) {
   
   html += `</div>`;
   processesContainer.innerHTML = html;
+}
+
+// Atualiza a barra superior com a URL e dados do usuário do site selecionado
+function updateSeiBarInfo() {
+  const seiBarUrl = document.getElementById('seiBarUrl');
+  const seiUserName = document.getElementById('seiUserName');
+  const seiUserNick = document.getElementById('seiUserNick');
+  const seiUserUnit = document.getElementById('seiUserUnit');
+  const select = document.getElementById('siteSelect');
+  if (select && select.value !== '') {
+    const site = currentSites[select.value];
+    if (seiBarUrl) seiBarUrl.textContent = site ? site.url : '';
+    if (seiUserName) seiUserName.textContent = site && site.userName ? site.userName : '';
+    if (seiUserUnit) seiUserUnit.textContent = site && site.userUnit ? site.userUnit : '';
+    if (seiUserNick) {
+      const match = site && site.userName ? site.userName.match(/\(([^)]+)\)/) : null;
+      seiUserNick.textContent = match ? match[1] : '';
+    }
+  } else {
+    if (seiBarUrl) seiBarUrl.textContent = '';
+    if (seiUserName) seiUserName.textContent = '';
+    if (seiUserNick) seiUserNick.textContent = '';
+    if (seiUserUnit) seiUserUnit.textContent = '';
+  }
+}
+
+// Atualiza a barra superior com a URL do site selecionado
+function updateSeiBarUrl() {
+  const seiBarUrl = document.getElementById('seiBarUrl');
+  const select = document.getElementById('siteSelect');
+  if (seiBarUrl && select && select.value !== '') {
+    const site = currentSites[select.value];
+    seiBarUrl.textContent = site ? site.url : '';
+  } else if (seiBarUrl) {
+    seiBarUrl.textContent = '';
+  }
 }
 
 // Função para selecionar automaticamente o site da aba ativa
